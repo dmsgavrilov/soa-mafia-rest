@@ -4,12 +4,12 @@
 
 version: "3.3"
 services:
-  backend:
-    build: ./backend
+  app:
+    build: ./app
     container_name: backend
     restart: unless-stopped
     environment:
-      DATABASE_URI: postgresql://postgres:qwerty@db:5432/app
+      DATABASE_URI: postgresql://postgres:123@db:5432
     volumes:
       - for_download:/for_download
     networks:
