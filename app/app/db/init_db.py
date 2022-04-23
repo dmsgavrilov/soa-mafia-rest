@@ -22,3 +22,5 @@ def create_first_user(db: Session) -> None:
         is_superuser=True,
         sex="m"
     )
+    db.add(user)
+    db.commit()
