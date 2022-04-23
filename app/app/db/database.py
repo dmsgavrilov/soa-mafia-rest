@@ -1,5 +1,5 @@
-from sqlalchemy import create_engine, MetaData
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import create_engine
+from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import sessionmaker
 
 from app.config import settings
@@ -12,5 +12,5 @@ engine = create_engine(
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base()
-metadata = MetaData(bind=engine)
+Base = automap_base()
+Base.prepare(engine, reflect=True)

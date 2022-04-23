@@ -17,7 +17,7 @@ class Settings:
     SQLALCHEMY_POOL_SIZE = 20
     SQLALCHEMY_MAX_OVERFLOW = 40
 
-    SQLALCHEMY_DATABASE_URI: str = os.environ.get("DATABASE_URI", "postgresql://postgres:qwerty@db:5432/app")
+    SQLALCHEMY_DATABASE_URI: str = os.environ.get("DATABASE_URI", "postgresql://postgres:123@localhost:5432")
 
     MAX_IMAGE_SIZE: int = 450  # kb
 

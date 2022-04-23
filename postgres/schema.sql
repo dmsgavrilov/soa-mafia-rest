@@ -15,9 +15,11 @@ CREATE TABLE IF NOT EXISTS games (
     end_date TIMESTAMP WITHOUT TIME ZONE
 );
 
-CREATE TABLE IF NOT EXISTS players (
-    user_id serial NOT NULL,
-    game_id serial NOT NULL,
+CREATE TABLE IF NOT EXISTS users_games  (
+    user_id INT NOT NULL,
+    game_id INT NOT NULL,
+
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (game_id) REFERENCES games(id)
+    FOREIGN KEY (game_id) REFERENCES games(id),
+    UNIQUE (user_id, game_id)
 );
