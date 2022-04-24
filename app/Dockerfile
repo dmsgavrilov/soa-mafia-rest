@@ -18,5 +18,7 @@ VOLUME [ "/for_download" ]
 
 EXPOSE 3000
 
+ENV PYTHONPATH=.
+
 RUN python3 app/init_data.py
 CMD ["uvicorn", "app.main:app", "--reload", "--port=3000", "--host=0.0.0.0" ]
