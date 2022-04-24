@@ -2,6 +2,7 @@ import logging
 
 from fastapi import FastAPI
 from fastapi.logger import logger
+from fastapi.openapi.utils import get_openapi
 from fastapi.staticfiles import StaticFiles
 
 from starlette.middleware.cors import CORSMiddleware
@@ -18,8 +19,27 @@ logger.setLevel(logging.DEBUG)
 
 app = FastAPI(
     docs_url=f"{settings.API_V1_PREFIX}/docs",
+    openapi_url=f"{settings.API_V1_PREFIX}/openapi.json",
     title=settings.APP_TITLE
 )
+
+
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+    openapi_schema = get_openapi(
+        title=settings.APP_TITLE,
+        version="0.2.0",
+        routes=app.routes
+    )
+    openapi_schema["info"]["x-logo"] = {
+        "url": "https://ont.by/uploads/wysiwyg/images/nBB9QW9uKw5VHVkE.jpg"
+    }
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+
+app.openapi = custom_openapi
 
 origins = [
     "*",

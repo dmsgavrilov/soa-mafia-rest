@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from fastapi.encoders import jsonable_encoder
 
 from app.crud.base import CRUDBase, ModelType
-from app.models import User
+from app.models import User, users_games
 from app.schemas.users import CreateUser, UpdateUser
 from app.utils.security import get_password_hash, verify_password
 
@@ -30,6 +30,10 @@ class CRUDUser(CRUDBase[User, CreateUser, UpdateUser]):
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
+        for game_id in obj_in.games_ids:
+            user_game = users_games(user_id=db_obj.id, game_id=game_id)
+            db.add(user_game)
+        db.commit()
         return db_obj
 
     def authenticate(self, db: Session, *, email: str, password: str) -> Optional[User]:

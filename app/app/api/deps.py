@@ -2,22 +2,19 @@ from typing import Generator
 
 import jwt
 from fastapi import Depends, HTTPException
-from fastapi.security import OAuth2PasswordBearer, SecurityScopes
+from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from starlette import status
 
 from app.config import settings
-from app.crud.user_crud import user as user_crud
+from app.crud.users import user as user_crud
 from app.db.database import SessionLocal
 from app.models import User
-from app.schemas import (
-    TokenPayload,
-)
+from app.schemas import TokenPayload
 from app.utils.security import decode_access_token
 
 reusable_oauth2 = OAuth2PasswordBearer(
-    tokenUrl=f"{settings.API_V1_PREFIX}/auth/access-token",
-    scopes=settings.USER_SCOPES
+    tokenUrl=f"{settings.API_V1_PREFIX}/auth/access-token"
 )
 
 
@@ -30,7 +27,7 @@ def get_db() -> Generator:
 
 
 def get_current_user(
-    security_scopes: SecurityScopes, db: Session = Depends(get_db), token: str = Depends(reusable_oauth2)
+    db: Session = Depends(get_db), token: str = Depends(reusable_oauth2)
 ) -> User:
     try:
         payload = decode_access_token(token)
@@ -43,12 +40,6 @@ def get_current_user(
     user = user_crud.get_by_email(db, email=token_data.email)
     if not user:
         raise HTTPException(status_code=401, detail="User not found")
-    for scope in security_scopes.scopes:
-        if scope not in token_data.scopes:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Not enough permissions",
-            )
     return user
 
 

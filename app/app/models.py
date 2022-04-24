@@ -1,4 +1,5 @@
 from app.db.database import Base
 
 User = Base.classes.users
-Games = Base.classes.games
+Game = Base.classes.games
+users_games = Base.classes.users_games

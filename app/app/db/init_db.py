@@ -1,9 +1,10 @@
 from sqlalchemy.orm import Session
 
 from app.config import settings
+from app.crud.users import user as user_crud
 from app.db.database import Base
 from app.db.database import engine
-from app.models import User
+from app.schemas import CreateUser
 
 
 def init_db(db: Session) -> None:
@@ -15,12 +16,14 @@ def drop_db(db: Session) -> None:
 
 
 def create_first_user(db: Session) -> None:
-    user = User(
-        nickname="admin",
-        email=settings.FIRST_SUPERUSER,
-        password=settings.FIRST_SUPERUSER_PASSWORD,
-        is_superuser=True,
-        sex="m"
-    )
-    db.add(user)
-    db.commit()
+    user = user_crud.get_by_email(db, email=settings.ADMIN_EMAIL)
+    if not user:
+        user_in = CreateUser(
+            email=settings.ADMIN_EMAIL,
+            nickname=settings.ADMIN_NICKNAME,
+            img_url=settings.ADMIN_LOGO,
+            password=settings.ADMIN_PASSWORD,
+            sex=settings.ADMIN_SEX,
+            is_superuser=True,
+        )
+        user_crud.create(db, obj_in=user_in)

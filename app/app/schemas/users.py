@@ -3,11 +3,9 @@ from typing import List, Optional
 from pydantic import BaseModel, EmailStr, AnyUrl, validator
 from pydantic.types import constr
 
-from app.config import settings
-
 
 class BaseUser(BaseModel):
-    email: EmailStr
+    email: Optional[EmailStr]
     nickname: str
     img_url: Optional[AnyUrl]
     sex: str
@@ -15,12 +13,13 @@ class BaseUser(BaseModel):
 
 
 class CreateUser(BaseUser):
+    games_ids: List[int]
     password: constr(max_length=32, min_length=8)
 
     @validator("sex")
     def sex_validation(cls, v, values, **kwargs):
         if v not in ("f", "m"):
-            raise ValueError("Invalid scope(s)")
+            raise ValueError("Invalid sex value. Must be in ('f', 'm')")
         return v
 
 
@@ -33,7 +32,7 @@ class UpdateUser(BaseModel):
     @validator("sex")
     def sex_validation(cls, v, values, **kwargs):
         if v not in ("f", "m"):
-            raise ValueError("Invalid scope(s)")
+            raise ValueError("Invalid sex value")
         return v
 
 

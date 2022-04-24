@@ -21,10 +21,8 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def __init__(self, model: Type[ModelType]):
         self.model = model
 
-    def get_many(self, db: Session, project_id: int = None, skip: int = 0, limit: int = 10) -> (List[ModelType], int):
+    def get_many(self, db: Session, skip: int = 0, limit: int = 10) -> (List[ModelType], int):
         query = db.query(self.model)
-        if project_id is not None:
-            query = query.filter_by(project_id=project_id)
         return query.offset(skip).limit(limit).all(), query.count()
 
     def get_by_id(self, db: Session, item_id: int) -> ModelType:
